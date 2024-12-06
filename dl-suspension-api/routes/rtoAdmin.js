@@ -12,6 +12,7 @@ router.post('/create-rto-user', async (req, res) => {
       FullName,
       ContactNo,
       RtoID,
+      OperationStatus,
       EntryUserID,
     } = req.body;
 
@@ -24,6 +25,7 @@ router.post('/create-rto-user', async (req, res) => {
         'FullName',
         'ContactNo',
         'RtoID',
+        'OperationStatus',
         'EntryUserID',
       ]);
     } catch (error) {
@@ -36,8 +38,8 @@ router.post('/create-rto-user', async (req, res) => {
 
     // Call the stored procedure
     const [spResult] = await pool.query(
-      'CALL sp_saveCreateRtoUser(?, ?, ?, ?, ?, ?, ?, @OUTUserID, @ErrorCode);',
-      [UserID, Username, UserPassword, FullName, ContactNo, RtoID, EntryUserID]
+      'CALL sp_saveCreateRtoUser(?, ?, ?, ?, ?, ?, ?, ?, @OUTUserID, @ErrorCode);',
+      [UserID, Username, UserPassword, FullName, ContactNo, RtoID, OperationStatus, EntryUserID]
     );
     
     const [errorCodeResult] = await pool.query('SELECT @ErrorCode AS ErrorCode, @OUTUserID as OUTUserID;');
