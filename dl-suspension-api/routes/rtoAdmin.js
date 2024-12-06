@@ -6,6 +6,7 @@ const router = express.Router();
 router.post('/create-rto-user', async (req, res) => {
   try {
     const {
+      UserID,
       Username,
       UserPassword,
       FullName,
@@ -17,6 +18,7 @@ router.post('/create-rto-user', async (req, res) => {
     // Validate required fields using the validateFields function
     try {
       validateFields(req.body, [
+        'UserID',
         'Username',
         'UserPassword',
         'FullName',
@@ -34,11 +36,11 @@ router.post('/create-rto-user', async (req, res) => {
 
     // Call the stored procedure
     const [spResult] = await pool.query(
-      'CALL sp_saveCreateRtoUser(?, ?, ?, ?, ?, ?, @ErrorCode);',
-      [Username, UserPassword, FullName, ContactNo, RtoID, EntryUserID]
+      'CALL sp_saveCreateRtoUser(?, ?, ?, ?, ?, ?, ?, @OUTUserID, @ErrorCode);',
+      [UserID, Username, UserPassword, FullName, ContactNo, RtoID, EntryUserID]
     );
     
-    const [errorCodeResult] = await pool.query('SELECT @ErrorCode AS ErrorCode;');
+    const [errorCodeResult] = await pool.query('SELECT @ErrorCode AS ErrorCode, @OUTUserID as OUTUserID;');
     
     const errorCode = errorCodeResult[0].ErrorCode;
     console.error(errorCode)
